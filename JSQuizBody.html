@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hidden {display:none;}
+    </style>
+</head>
+
+<body>
+    <div id="quiz-container">
+        <h1>Interactive Quiz</h1>
+        <div id="question-container"></div>
+        <button id="next-btn" class="hidden" onclick="showNextQuestion()">Next</button>
+        <div id="results" class="hidden"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: 'What is the capital of France?',
+                answers: ['Paris', 'Berlin', 'London', 'Madrid'],
+                correctIndex: 0,
+            },
+            {
+                question: 'What is the largest planet in our solar system?',
+                answers: ['Earth', 'Jupiter', 'Mars', 'Saturn'],
+                correctIndex: 1,
+            },
+            //add more questions
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const questionContainer = document.getElementById('question-container');
+        const nextButton = document.getElementById('next-btn');
+        const resultsContainer = document.getElementById('results');
+
+        function showQuestion() {
+            const questionObj = questions[currentQuestionIndex];
+            questionContainer.innerHTML =`
+        <h2>${questionObj.question}</h2>
+        <ul>
+          ${questionObj.answers.map((answer, index) => `
+            <li>
+              <input type="radio" name="answer" value="${index}" id="answer-${index}">
+              <label for="answer-${index}">${answer}</label>
+            </li>
+          `).join('')}
+        </ul>
+      `;
+      nextButton.classList.remove('hidden');
+    }
+
+    function showNextQuestion() {
+        const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+        if (!selectedAnswer) {
+            alert('Please select an answer');
+            return;
+        }
+
+        const answerIndex = parseInt(selectedAnswer.value);
+        if (answerIndex === questions[currentQuestionIndex].correctIndex) {
+            score++;
+        }
+
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        questionContainer.classList.add('hidden');
+        nextButton.classList.add('hidden');
+        resultsContainer.innerHTML = `<h2>Your score: ${score} / ${questions.length}</h2>`;
+        resultsContainer.classList.remove('hidden');
+    }
+
+    showQuestion();
+    </script>
+</body>
+</html>
